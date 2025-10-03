@@ -1,8 +1,11 @@
 package co.edu.uniquindio;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
-public class ListaSimpleEnlazada<T> implements Iterable<T> {
+public class ListaSimpleEnlazada<T extends Comparable<T>> implements Iterable<T> {
     private Nodo<T> primero;
     private int tam;
 
@@ -64,6 +67,43 @@ public class ListaSimpleEnlazada<T> implements Iterable<T> {
             }
             newNodo.setProximo(actual.getProximo());
             actual.setProximo(newNodo);
+        }
+        tam++;
+    }
+
+    public void ordenarAscendentemente() {
+        if (primero == null) return;
+
+        List<T> elementos = new ArrayList<>();
+        Nodo<T> actual = primero;
+        while (actual != null) {
+            elementos.add(actual.getDato());
+            actual = actual.getProximo();
+        }
+
+        Collections.sort(elementos);
+
+        actual = primero;
+        for (T dato : elementos) {
+            actual.setDato(dato);
+            actual = actual.getProximo();
+        }
+    }
+
+    public void insertarOrdenado(T dato) {
+        Nodo<T> nuevo = new Nodo<>(dato);
+
+        if (primero == null || dato.compareTo(primero.getDato()) < 0) {
+            nuevo.setProximo(primero);
+            primero = nuevo;
+        } else {
+            Nodo<T> actual = primero;
+            while (actual.getProximo() != null &&
+                    dato.compareTo(actual.getProximo().getDato()) >= 0) {
+                actual = actual.getProximo();
+            }
+            nuevo.setProximo(actual.getProximo());
+            actual.setProximo(nuevo);
         }
         tam++;
     }

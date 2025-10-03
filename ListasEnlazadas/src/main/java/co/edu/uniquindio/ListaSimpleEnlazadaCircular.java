@@ -1,6 +1,10 @@
 package co.edu.uniquindio;
 
-public class ListaSimpleEnlazadaCircular<T> {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ListaSimpleEnlazadaCircular<T extends Comparable<T>> {
     private Nodo<T> primero;
     private Nodo<T> ultimo;
     private int tam;
@@ -56,6 +60,51 @@ public class ListaSimpleEnlazadaCircular<T> {
 
         mensaje += "]";
         System.out.println(mensaje);
+    }
+
+    public void ordenarAscendentemente() {
+        if (primero == null) return;
+
+        List<T> elementos = new ArrayList<>();
+        Nodo<T> actual = primero;
+        do {
+            elementos.add(actual.getDato());
+            actual = actual.getProximo();
+        } while (actual != primero);
+
+        Collections.sort(elementos);
+
+        actual = primero;
+        for (T dato : elementos) {
+            actual.setDato(dato);
+            actual = actual.getProximo();
+        }
+    }
+
+    public void insertarOrdenado(T dato) {
+        Nodo<T> nuevo = new Nodo<>(dato);
+
+        if (primero == null) {
+            primero = nuevo;
+            ultimo = nuevo;
+            ultimo.setProximo(primero);
+        } else if (dato.compareTo(primero.getDato()) < 0) {
+            nuevo.setProximo(primero);
+            primero = nuevo;
+            ultimo.setProximo(primero);
+        } else {
+            Nodo<T> actual = primero;
+            while (actual.getProximo() != primero &&
+                    dato.compareTo(actual.getProximo().getDato()) >= 0) {
+                actual = actual.getProximo();
+            }
+            nuevo.setProximo(actual.getProximo());
+            actual.setProximo(nuevo);
+            if (actual == ultimo) {
+                ultimo = nuevo;
+            }
+        }
+        tam++;
     }
 
     public int getTam() {
